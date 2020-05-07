@@ -145,7 +145,7 @@ def train(args, loader, generator, discriminator, g_optim, d_optim, g_ema, devic
     else:
         g_module = generator
         d_module = discriminator
-        
+
     accum = 0.5 ** (32 / (10 * 1000))
 
     sample_z = torch.randn(args.n_sample, args.latent, device=device)
@@ -301,7 +301,7 @@ if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
 
-    parser.add_argument('path', type=str)
+    parser.add_argument('--dataset', type=str)
     parser.add_argument('--iter', type=int, default=800000)
     parser.add_argument('--batch', type=int, default=16)
     parser.add_argument('--n_sample', type=int, default=64)
@@ -361,16 +361,16 @@ if __name__ == '__main__':
 
     if args.ckpt is not None:
         print('load model:', args.ckpt)
-        
+
         ckpt = torch.load(args.ckpt)
 
         try:
             ckpt_name = os.path.basename(args.ckpt)
             args.start_iter = int(os.path.splitext(ckpt_name)[0])
-            
+
         except ValueError:
             pass
-            
+
         generator.load_state_dict(ckpt['g'])
         discriminator.load_state_dict(ckpt['d'])
         g_ema.load_state_dict(ckpt['g_ema'])
@@ -402,7 +402,7 @@ if __name__ == '__main__':
         ]
     )
 
-    dataset = MultiResolutionDataset(args.path, transform, args.size)
+    dataset = MultiResolutionDataset(args.dataset, transform, args.size)
     loader = data.DataLoader(
         dataset,
         batch_size=args.batch,
